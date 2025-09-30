@@ -12,7 +12,7 @@ Test::~Test() {
 
 int main()
 {
-    std::cout << 12 << std::endl;
+    std::cout << 123 << std::endl;
     Test test;
     test.PrintTest();
     return 0;
