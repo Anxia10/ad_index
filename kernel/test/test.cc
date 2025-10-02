@@ -7,7 +7,10 @@ Test::Test() {
 }
 
 Test::~Test() {
+    
+}
 
+void InitParament() {
 }
 
 int main()

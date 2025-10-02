@@ -10,14 +10,14 @@ class FileStore : public Store {
         FileStore();
         virtual ~FileStore();
 
-        data::Status Open() override;
+        data::Status Open(const std::string& name, bool read_only) override;
         data::Status Close() override;
-        data::Status Read() override;
+        data::Status Read(const data::Addr& addr, size_t len, data::Data* data) override;
         data::Status Write(const data::Addr& addr, const data::Data& data) override;
+    
+    private:
+        size_t GetFileSize();
 
-        const std::string& GetName() {
-            return name_;
-        }
     protected:
         int32_t fd_;
         size_t size_;

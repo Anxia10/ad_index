@@ -8,4 +8,7 @@ class Test {
         void PrintTest() {
             std::cout << 234 << std::endl;
         }
+        void InitParament();
+    protected:
+        int parament;
 };
