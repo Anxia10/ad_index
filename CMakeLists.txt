@@ -8,6 +8,21 @@ project(ad_index)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# 设置变量
+set(store_dir ${PROJECT_SOURCE_DIR}/kernel/store)
+set(test_data_dir ${PROJECT_SOURCE_DIR}/kernel/test/testdata)
+set(LOG4CPP_LIBRARIES log4cpp CACHE INTERNAL "log4cpp library")
+
+# 首先创建主库目标（空的接口库）
+add_library(ad_index kernel)
+
+# 为主库目标设置属性
+include_directories(
+    ${PROJECT_SOURCE_DIR}
+    ${LOG4CPP_INCLUDE_DIRS}
+)
+
+
 # GoogleTest
 include(FetchContent)
 FetchContent_Declare(
@@ -17,15 +32,11 @@ FetchContent_Declare(
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
-# 设置变量
-set(store_dir ${PROJECT_SOURCE_DIR}/kernel/store)
+add_definitions(-Dtest_data_dir="${test_data_dir}")
 
-include_directories(
-    ${PROJECT_SOURCE_DIR}
-)
-
-# 编译子文件夹的CmakeLists.txt
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+# 编译子文件夹
+add_subdirectory(kernel/common/data)
+add_subdirectory(kernel/common/log)
 add_subdirectory(kernel/store)
-
-
-
+add_subdirectory(kernel/test)

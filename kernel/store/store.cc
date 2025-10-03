@@ -3,6 +3,8 @@
 namespace kernel {
 namespace store {
 
+LOG_SETUP("kernel", Store);
+
 Store::Store() {
 }
 

@@ -1,11 +1,5 @@
 project(common_data)
 
-set (
-  common_data_source
+add_library(common_data STATIC
   status.cc
-)
-
-add_executable(
-  common_data
-  ${common_data_source}
 )

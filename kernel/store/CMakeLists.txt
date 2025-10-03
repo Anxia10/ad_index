@@ -5,15 +5,10 @@ include_directories(
     ${PROJECT_SOURCE_DIR}
 )
 
-set (
-  store_source
+add_library(store
   file_store.cc
   store.cc
 )
+target_link_libraries(store common_data common_log)
 
-add_library(
-  file_store
-  ${store_source}
-)
-
-# add_subdirectory(test)
+add_subdirectory(test)
