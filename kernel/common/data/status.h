@@ -19,6 +19,10 @@ class Status {
         bool operate() {
             return status_code == StatusCode::Success;
         }
+
+        const std::string& GetReason() {
+            return reason;
+        }
     private:
         StatusCode status_code;
         std::string reason;

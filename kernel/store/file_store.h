@@ -15,6 +15,8 @@ class FileStore : public Store {
         data::Status Read(const data::Addr& addr, size_t len, data::Data* data) override;
         data::Status Write(const data::Addr& addr, const data::Data& data) override;
         data::Status Append(const data::Data& data) override;
+        data::Status Expand(size_t size) override;
+        data::Status Truncate(size_t size) override;
         
         size_t GetSize() override {
             return size_;

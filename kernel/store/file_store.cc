@@ -129,6 +129,36 @@ data::Status FileStore::Read(const data::Addr& addr, size_t len, data::Data* dat
     return data::Status(data::StatusCode::Success);
 }
 
+data::Status FileStore::Expand(size_t size) {
+    if (unlikely(size == 0)) {
+        LOG_DEBUG("File expand size 0.");
+        return data::Status(data::StatusCode::Success);
+    }
+    if (unlikely(fd_ < 0)) {
+        LOG_ERROR("File not open.");
+        return data::Status(data::StatusCode::Exception, "not open");
+    }
+    off_t pos = lseek(fd_, size - 1, SEEK_END);
+    if (unlikely(pos < 0)) {
+        LOG_ERROR("File expand fail.");
+        return data::Status(data::StatusCode::Exception, "expand size exception");
+    }
+    pos = write(fd_, &size, 1);
+    if (unlikely(pos < 0)) {
+        LOG_ERROR("File write with expand fail.");
+        return data::Status(data::StatusCode::Exception, "expand size exception");
+    }
+    size_ += size;
+     return data::Status(data::StatusCode::Success);
+ }
+
+ data::Status FileStore::Truncate(size_t size) {
+    if (0 != ftruncate(fd_, size)) {
+        return data::Status(data::StatusCode::Exception, "ftruncate exception");
+    }
+    return data::Status(data::StatusCode::Success);
+ }
+
 size_t FileStore::GetFileSize() {
     if (unlikely(fd_ < 0)) {
         // Log Error

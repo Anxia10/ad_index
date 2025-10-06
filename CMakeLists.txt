@@ -14,7 +14,7 @@ set(test_data_dir ${PROJECT_SOURCE_DIR}/kernel/test/testdata)
 set(LOG4CPP_LIBRARIES log4cpp CACHE INTERNAL "log4cpp library")
 
 # 首先创建主库目标（空的接口库）
-add_library(ad_index kernel)
+add_library(ad_index INTERFACE)
 
 # 为主库目标设置属性
 include_directories(
