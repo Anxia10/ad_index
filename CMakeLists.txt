@@ -35,8 +35,11 @@ FetchContent_MakeAvailable(googletest)
 add_definitions(-Dtest_data_dir="${test_data_dir}")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+add_compile_options("-mavx2")
 # 编译子文件夹
 add_subdirectory(kernel/common/data)
 add_subdirectory(kernel/common/log)
 add_subdirectory(kernel/store)
+add_subdirectory(kernel/index)
 add_subdirectory(kernel/test)
