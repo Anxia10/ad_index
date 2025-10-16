@@ -4,9 +4,10 @@
 static kernel::index::MurMurHashTable table;
 static kernel::pool::MMapPool pool;
 static kernel::index::KvPair kv;
+const static std::string base_path = test_data_dir;
 
 TEST(MurMurHashTable, LogConfig) {
-    LOG_CONFIG("sophon/test/testdata/log4cpp.properties");
+    LOG_CONFIG(base_path + "/log4cpp.properties");
 }
 
 TEST(MurMurHashTable, CheckMurMurHashTableHeader) {
@@ -25,12 +26,12 @@ TEST(MurMurHashTable, BucketNum) {
 }
 
 TEST(MurMurHashTable, InitReadOnly) {
-    EXPECT_FALSE(pool.Init("murmurhash_table_test.dat", true));
+    EXPECT_FALSE(pool.Init(base_path + "/murmurhash_table_test.dat", true));
     pool.Release();
 }
 
 TEST(MurMurHashTable, Init) {
-    EXPECT_TRUE(pool.Init("murmurhash_table_test.dat"));
+    EXPECT_TRUE(pool.Init(base_path + "/murmurhash_table_test.dat"));
     EXPECT_TRUE(table.Init(&pool, pool.GetMMapDataBegin()));
 }
 
@@ -41,6 +42,6 @@ TEST(MurMurHashTable, Insert) {
     EXPECT_EQ(1UL, table.GetSize());
 }
 
-TEST(MurMurHashTable, Search) {
+// TEST(MurMurHashTable, Search) {
 
-}
+// }

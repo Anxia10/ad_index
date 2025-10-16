@@ -7,7 +7,8 @@ include_directories(
 add_library(store
   file_store.cc
   store.cc
+  mmap_store.cc
 )
-target_link_libraries(store common_data common_log)
+target_link_libraries(store common)
 
 add_subdirectory(test)

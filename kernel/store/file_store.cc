@@ -22,18 +22,15 @@ FileStore::~FileStore() {
 
 // 打开文件
 data::Status FileStore::Open(const std::string& name, bool read_only) {
-    LOG_INFO("123");
     if (fd_ >= 0) {
         LOG_ERROR("File %s already open.", name.c_str());
         return data::Status(data::StatusCode::Exception, "already open");
     }
-    LOG_INFO("234");
     if (read_only) {
         fd_ = open(name.c_str(), O_RDONLY); //只读
     } else {
         fd_ = open(name.c_str(), O_RDWR | O_CREAT , S_IRWXU | S_IRGRP | S_IROTH); 
     }
-    LOG_INFO("456");
 
     if (fd_ < 0) {
         LOG_ERROR("File %s open fail.[%s]", name.c_str(), strerror(errno));
@@ -60,13 +57,13 @@ data::Status FileStore::Close() {
     return data::Status(data::StatusCode::Success);
 }
 
-// 不需要校验文件是否RDONLY？需要考虑指针和文件的内存偏移量转化是否有意义？
 data::Status FileStore::Write(const data::Addr& addr, const data::Data& data) {
     if (unlikely(fd_ < 0)) {
         LOG_ERROR("File not open.");
         return data::Status(data::StatusCode::Exception, "Not Open");
     }
     off_t pos = reinterpret_cast<off_t>(addr.addr); // 指针转为文件位置
+    LOG_INFO("Addr %ld. Get pos %ld", addr.addr, pos);
     off_t pointer = lseek(fd_, pos, SEEK_SET); // 文件指针移动到addr的位置
 
     if(unlikely(pointer < 0 || pointer != pos)) {
@@ -88,7 +85,7 @@ data::Status FileStore::Write(const data::Addr& addr, const data::Data& data) {
 
 data::Status FileStore::Append(const data::Data& data) {
     data::Addr addr;
-    addr.addr = reinterpret_cast<void*>(GetSize()); // 文件大小转为文件指针？？？
+    addr.addr = reinterpret_cast<void*>(GetSize()); 
     if (unlikely(reinterpret_cast<off_t>(addr.addr) < 0)) {
         LOG_ERROR("File get size exception.");
         return data::Status(data::StatusCode::Exception, "get size exception");
@@ -98,14 +95,14 @@ data::Status FileStore::Append(const data::Data& data) {
 
 data::Status FileStore::Read(const data::Addr& addr, size_t len, data::Data* data) {
     if (unlikely(fd_ < 0)) {
-        // Log Error
+        LOG_ERROR("File not open.");
         return data::Status(data::StatusCode::Exception, "Not Open");
     }
 
     off_t pos = reinterpret_cast<off_t>(addr.addr);
     off_t size = lseek(fd_, 0, SEEK_END);
     if (unlikely(pos > size)) {
-        // Log Error
+        LOG_ERROR("File Read Pos Out Of Range");
         return data::Status(data::StatusCode::Exception, "Pos Out Of Range");
     }
 
@@ -114,14 +111,14 @@ data::Status FileStore::Read(const data::Addr& addr, size_t len, data::Data* dat
     size_t read_len = left_size > len ? len : left_size;
 
     if(unlikely(pointer < 0 || pointer != pos)) {
-        // Log Error
+        LOG_ERROR("File Read Lseek Exception");
         return data::Status(data::StatusCode::Exception, "Lseek Fail");
     }
 
     off_t result_len = read(fd_, reinterpret_cast<char*>(const_cast<void *>(data->data)), read_len);
     
     if (read_len != result_len) {
-        // Log Error
+        LOG_ERROR("File Read Len Exception");
         return data::Status(data::StatusCode::Exception, "Length Exception");
     }
     data->len = read_len;
@@ -138,7 +135,7 @@ data::Status FileStore::Expand(size_t size) {
         LOG_ERROR("File not open.");
         return data::Status(data::StatusCode::Exception, "not open");
     }
-    off_t pos = lseek(fd_, size - 1, SEEK_END);
+    off_t pos = lseek(fd_, size - 1, SEEK_END); // 将文件指针移动到 “当前文件末尾 + (size - 1) 字节” 的位置
     if (unlikely(pos < 0)) {
         LOG_ERROR("File expand fail.");
         return data::Status(data::StatusCode::Exception, "expand size exception");

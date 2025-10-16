@@ -16,7 +16,7 @@ TEST(MMapStore, Open) {
     mmap_store.SetMMapSize(4 * 1024);
     mmap_store.SetMemoryLock(true);
     mmap_store.SetMemoryPreload(true);
-    status = mmap_store.Open("mmap_store_test.dat");
+    status = mmap_store.Open(base_path+"/mmap_store_test.dat");
     EXPECT_FALSE(!status.operate());
 }
 

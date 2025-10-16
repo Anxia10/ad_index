@@ -20,7 +20,7 @@ MMapStore::~MMapStore() {
     Close();
 }
 
-data::Status MMapStore::Open(const std::string& name, bool read_only = false) {
+data::Status MMapStore::Open(const std::string& name, bool read_only) {
     data::Status status = FileStore::Open(name, read_only);
     if (!status.operate()) {
         LOG_ERROR("Open file %s fail.", name.c_str());
@@ -35,6 +35,7 @@ data::Status MMapStore::Open(const std::string& name, bool read_only = false) {
         flags |= MAP_LOCKED;
     }
     char* base = reinterpret_cast<char*>(mmap(nullptr, mmap_size_, mmap_port, flags, fd_, 0));
+    LOG_INFO("mmap start addr: %p", base);
     if (base == MAP_FAILED) {
         LOG_ERROR("File %s mmap fail. %s", name.c_str(), strerror(errno));
         return data::Status(data::StatusCode::Exception, "MMap Fail");
@@ -78,10 +79,10 @@ data::Status MMapStore::Write(const data::Addr& addr, const data::Data& data) {
         return data::Status(data::StatusCode::Exception, "addr error");
     }
     size_t file_size = GetSize();
-    char* mmap_end = base_ + (file_size < mmap_size_ ? file_size : mmap_size_);
+    char* mmap_end = base_ + (file_size < mmap_size_ ? file_size : mmap_size_); // file_size的大小没做变化？？？
 
     if (unlikely(write_begin + data.len > mmap_end)) {
-        LOG_ERROR("Use FileStore Write.");
+        LOG_ERROR("Use FileStore Write. write_begin[%p], data len[%lu], mmap end[%p]", write_begin, data.len, mmap_end);
         size_t offset = write_begin - base_;
         return FileStore::Write(data::Addr(reinterpret_cast<void*>(offset)), data);
     }
