@@ -22,6 +22,12 @@ include_directories(
     ${LOG4CPP_INCLUDE_DIRS}
 )
 
+include(FetchContent)
+FetchContent_Declare(
+  rapidjson
+  URL https://github.com/Tencent/rapidjson/archive/refs/tags/v1.1.0.zip
+)
+FetchContent_MakeAvailable(rapidjson)
 
 # GoogleTest
 include(FetchContent)
@@ -31,6 +37,8 @@ FetchContent_Declare(
 )
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
+
+
 
 add_definitions(-Dtest_data_dir="${test_data_dir}")
 

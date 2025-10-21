@@ -1,0 +1,28 @@
+{
+  "planId": 8974,
+  "signleInt8Value": 2,
+  "signleInt32Value": 2,
+  "varLenInt8Values": [1, 2],
+  "fixLenInt16Values": [1, 2, 3, 4, 5, 6, 7, 8, 9, 9],
+  "varLenInt16Values": [],
+  "varLenInt32Values": [3, 2, 3],
+  "varLenInt64Values": [2],
+  "varLenFloatValues": [1.1, 2.2],
+  "varLenDoubleValues": [1.1],
+  "signleStringValue": "zyx",
+  "fixLenStringValues": ["1", "2", "3", "4", "5", "6", "7", "7", "9", "10"],
+  "varLenStringValues": ["1", "3", "3", "4"],
+  "firstNested": [
+    {
+      "secondNested": [
+        {
+          "varLenStringValues": ["xyz1", "xyz0"]
+        },
+        {
+          "varLenStringValues": []
+        }
+      ],
+      "signleInt8Value": 3
+    }
+  ]
+}

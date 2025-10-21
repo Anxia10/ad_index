@@ -54,8 +54,8 @@ namespace kernel
                 *(reinterpret_cast<size_t *>(begin_)) = 64UL;
             }
             std::string free_list_file = store_->GetName() + ".fl";
-            if (0 == access(free_list_file.c_str(), R_OK))
-            {
+            if (0 == access(free_list_file.c_str(), R_OK)) // 检查是否有读权限, 0代表有
+            { 
                 LOG_INFO("Found free list file. Load free list now.");
                 if (!LoadFreeList(free_list_file))
                 {

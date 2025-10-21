@@ -1,0 +1,21 @@
+<data_config>
+  <table name="AdEmb" type="structure" key="spuid">
+    <descriptor>
+      <field name="poiId" type="int64"/>
+      <!--spuid可以用正排查向量-->
+      <field name="spuid" type="int64"/>
+      <!--count:向量纬度-->
+      <field name="spuEmb" type="float" count="32"/>
+      <field name="geoHash" type="string"/>
+    </descriptor>
+    <inverted>
+      <!--指定向量索引类型 与 相似度衡量算法-->
+      <index name="spuEmb" type="IndexIVFFlat" metric="L2" ncentroids="4" bucket="geoHash"/>
+    </inverted>
+    <kernel>
+      forward.index.type=murmurhash,
+      forward.index.hash.bucket.num=2097152,
+      forward.segment.level=1
+    </kernel>
+  </table>
+</data_config>

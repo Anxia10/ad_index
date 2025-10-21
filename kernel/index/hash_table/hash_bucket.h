@@ -12,7 +12,7 @@ namespace index {
 static const size_t kCheckPayloadSize =
     static_cast<int64_t>(sizeof(uint32_t)) > HASH_BUCKET_PAYLOAD_SIZE ?
     HASH_BUCKET_PAYLOAD_SIZE : sizeof(uint32_t);
-#pragma pack(push)
+#pragma pack(push) // 内存对齐
 #pragma pack(1)
 
 class HashBucket {

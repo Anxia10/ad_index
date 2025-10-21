@@ -325,10 +325,7 @@ Index::Iterator MurMurHashTable::Begin(int64_t offset) const {
         return Iterator(this, Iterator::Element(header, bucket));
     }
 
-    // 此处代码可能不完整，根据图片内容呈现
-    // ......
-
-    return Iterator(this, Iterator::Element());
+    return Iterator(this, GetNextElement(Index::Iterator::Element(header, bucket)));
 }
 
 Index::Iterator::Element MurMurHashTable::GetNextElement(

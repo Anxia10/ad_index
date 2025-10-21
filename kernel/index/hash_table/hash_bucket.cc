@@ -23,6 +23,7 @@ bool HashBucket::CheckKeyInPayload(const void* key, int32_t len) {
     }
     len = len > HASH_BUCKET_PAYLOAD_SIZE ? HASH_BUCKET_PAYLOAD_SIZE : len;
     const char* ptr = reinterpret_cast<const char*>(key);
+    // 高效的校验内存数据是否一致
     int32_t index = 0;
     __m256i left;
     __m256i right;

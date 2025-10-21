@@ -17,7 +17,10 @@ target_link_libraries(index pool)
 enable_testing()
 
 add_executable(murmurhash_table_test hash_table/test/murmurhash_table_test.cc)
+add_executable(hash_bucket_test hash_table/test/hash_bucket_test.cc)
 
 target_link_libraries(murmurhash_table_test gtest gtest_main index)
+target_link_libraries(hash_bucket_test gtest gtest_main index)
 
 add_test(NAME MurMurHashTable COMMAND murmurhash_table_test)
+add_test(NAME HashBucket COMMAND hash_bucket_test)

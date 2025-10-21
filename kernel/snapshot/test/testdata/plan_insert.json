@@ -1,0 +1,49 @@
+{
+  "planId": 8974,
+  "signleInt8Value": 1,
+  "fixLenInt8Values": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "varLenInt8Values": [],
+  "signleInt16Value": 2,
+  "fixLenInt16Values": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "varLenInt16Values": [1, 2, 3],
+  "signleInt32Value": 4,
+  "fixLenInt32Values": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "varLenInt32Values": [1, 2, 3, 4, 5],
+  "signleInt64Value": 8,
+  "fixLenInt64Values": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "varLenInt64Values": [1],
+  "signleFloatValue": 1.1,
+  "fixLenFloatValues": [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.0],
+  "varLenFloatValues": [1.1],
+  "signleDoubleValue": 2.2,
+  "fixLenDoubleValues": [1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.0],
+  "varLenDoubleValues": [1.1, 2.2],
+  "signleStringValue": "xyz",
+  "fixLenStringValues": ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
+  "varLenStringValues": ["1", "2", "3"],
+  "poiId": 1,
+  "firstNested": [
+    {
+      "secondNested": [
+        {
+          "varLenStringValues": ["xyz0"]
+        },
+        {
+          "varLenStringValues": ["xyz0", "xyz1"]
+        }
+      ],
+      "signleInt8Value": 2
+    },
+    {
+      "secondNested": [
+        {
+          "varLenStringValues": ["xyz0", "xyz1", "xyz2"]
+        },
+        {
+          "varLenStringValues": ["xyz0", "xyz1", "xyz2", "xyz3"]
+        }
+      ],
+      "signleInt8Value": 3
+    }
+  ]
+}
