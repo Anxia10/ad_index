@@ -1,4 +1,5 @@
 #include <immintrin.h>
+#include <avxintrin.h>
 #include <cstring>
 #include <vector>
 #include <algorithm>
@@ -135,59 +136,58 @@ inline Record* SortTable::SimdBinarySearch(
         simd_buffer = _mm256_lddqu_si256(
             reinterpret_cast<const __m256i*>(cmp_buffer));
 #if SORT_TABLE_KEY_SIZE == 4
-        simd_buffer = _mm256_cmpeq_epi32(simd_buffer, simd_target);
-        for (i = 0; i < valid_size; i++) {
-            bool need_break = false;
-            switch (i) {
-                case 0L:
-                    if (_mm256_extract_epi32(simd_buffer, 0)) need_break = true;
-                    break;
-                case 1L:
-                    if (_mm256_extract_epi32(simd_buffer, 1)) need_break = true;
-                    break;
-                case 2L:
-                    if (_mm256_extract_epi32(simd_buffer, 2)) need_break = true;
-                    break;
-                case 3L:
-                    if (_mm256_extract_epi32(simd_buffer, 3)) need_break = true;
-                    break;
-                case 4L:
-                    if (_mm256_extract_epi32(simd_buffer, 4)) need_break = true;
-                    break;
-                case 5L:
-                    if (_mm256_extract_epi32(simd_buffer, 5)) need_break = true;
-                    break;
-                case 6L:
-                    if (_mm256_extract_epi32(simd_buffer, 6)) need_break = true;
-                    break;
-                case 7L:
-                    if (_mm256_extract_epi32(simd_buffer, 7)) need_break = true;
-                    break;
-            }
-            if (need_break) break;
+    simd_buffer = _mm256_cmpgt_epi32(simd_buffer, simd_target);
+    for (i = 0; i < valid_size; i++) {
+        bool need_break = false;
+        switch (i) {
+            case 0L:
+                if (_mm256_extract_epi32(simd_buffer, 0)) need_break = true;
+                break;
+            case 1L:
+                if (_mm256_extract_epi32(simd_buffer, 1)) need_break = true;
+                break;
+            case 2L:
+                if (_mm256_extract_epi32(simd_buffer, 2)) need_break = true;
+                break;
+            case 3L:
+                if (_mm256_extract_epi32(simd_buffer, 3)) need_break = true;
+                break;
+            case 4L:
+                if (_mm256_extract_epi32(simd_buffer, 4)) need_break = true;
+                break;
+            case 5L:
+                if (_mm256_extract_epi32(simd_buffer, 5)) need_break = true;
+                break;
+            case 6L:
+                if (_mm256_extract_epi32(simd_buffer, 6)) need_break = true;
+                break;
+            case 7L:
+                if (_mm256_extract_epi32(simd_buffer, 7)) need_break = true;
+                break;
         }
+        if (need_break) break;
+    }
 #elif SORT_TABLE_KEY_SIZE == 8
-        simd_buffer = _mm256_cmpeq_epi64(simd_buffer, simd_target);
-        for (i = 0; i < valid_size; i++) {
-            bool need_break = false;
-            switch (i) {
-                case 0L:
-                    if (_mm256_extract_epi64(simd_buffer, 0)) need_break = true;
-                    break;
-                case 1L:
-                    if (_mm256_extract_epi64(simd_buffer, 1)) need_break = true;
-                    break;
-                case 2L:
-                    if (_mm256_extract_epi64(simd_buffer, 2)) need_break = true;
-                    break;
-                case 3L:
-                    if (_mm256_extract_epi64(simd_buffer, 3)) need_break = true;
-                    break;
-            }
-            if (need_break) break;
+    simd_buffer = _mm256_cmpgt_epi64(simd_buffer, simd_target);
+    for (i = 0; i < valid_size; i++) {
+        bool need_break = false;
+        switch (i) {
+            case 0L:
+                if (_mm256_extract_epi64(simd_buffer, 0)) need_break = true;
+                break;
+            case 1L:
+                if (_mm256_extract_epi64(simd_buffer, 1)) need_break = true;
+                break;
+            case 2L:
+                if (_mm256_extract_epi64(simd_buffer, 2)) need_break = true;
+                break;
+            case 3L:
+                if (_mm256_extract_epi64(simd_buffer, 3)) need_break = true;
+                break;
         }
 #endif
-        if (need_break) break;
+    if (need_break) break;
+    }
         prev = i - 1;
         if (unlikely(prev >= 0 && first_[mid[prev]] == nkey)) {
             return first_ + mid[prev];
@@ -345,7 +345,7 @@ bool SortTable::Search(KvPair* kv) {
   return true;
 }
 
-bool SortTable::BatchInsert(const std::vector<KvPair>& kvs, bool    bool already_sorted) {
+bool SortTable::BatchInsert(const std::vector<KvPair>& kvs,  bool already_sorted) {
     bool success = true;
     std::vector<KvPair> local_kvs(kvs.begin(), kvs.end());
     if (!already_sorted) {
@@ -459,97 +459,7 @@ bool SortTable::BatchDelete(const std::vector<KvPair>& kvs,
     return true;
 }
 
-bool SortTable::BatchSearch(std::vector<KvPair*>& kvs,
-    bool already_sorted) {
-    if (!already_sorted) {
-        std::sort(kvs.begin(), kvs.end(),
-            [this](KvPair* left, KvPair* right)->bool {
-                return GetHashKey(left->key, left->len) <
-                    GetHashKey(right->key, right->len);
-            });
-    }
 
-    int64_t left = 0;
-    int64_t right = header_->used_size - 1;
-    for (KvPair* kv : kvs) {
-        record_key_type target_key = GetHashKey(kv->key, kv->len);
-        int64_t low = left;
-        int64_t high = right;
-        kv->value = -1; // 默认未找到
-        while (low <= high) {
-            int64_t mid = (low + high) / 2;
-            record_key_type mid_key = first_[mid].key;
-            if (mid_key == target_key) {
-                kv->value = first_[mid].value;
-                break;
-            } else if (mid_key < target_key) {
-                low = mid + 1;
-            } else {
-                high = mid - 1;
-            }
-        }
-    }
-    return true;
-}
-
-SortTable::Iterator SortTable::Begin(int64_t offset) const {
-    Iterator iter;
-    if (offset < 0 || offset >= header_->used_size) {
-        iter.ele.ele = nullptr;
-        iter.ele.len = 0;
-        return iter;
-    }
-    iter.ele.ele = first_ + offset;
-    iter.ele.len = sizeof(Record);
-    return iter;
-}
-
-KvPair SortTable::ConvertElementToKvPair(const Iterator::Element& ele) const {
-    KvPair kv;
-    if (ele.ele == nullptr || ele.len != sizeof(Record)) {
-        return kv;
-    }
-    Record* record = reinterpret_cast<Record*>(const_cast<char*>(ele.ele));
-    kv.key = &record->key;
-    kv.len = sizeof(record_key_type);
-    kv.value = record->value;
-    return kv;
-}
-
-SortTable::Iterator::Element SortTable::GetNextElement(
-    const Iterator::Element& ele, int32_t n) const {
-    Iterator::Element next_ele;
-    if (ele.ele == nullptr) {
-        next_ele.ele = nullptr;
-        next_ele.len = 0;
-        return next_ele;
-    }
-    const Record* current = reinterpret_cast<const Record*>(ele.ele);
-    const Record* next = current + n;
-    if (next >= first_ + header_->used_size) {
-        next_ele.ele = nullptr;
-        next_ele.len = 0;
-    } else {
-        next_ele.ele = next;
-        next_ele.len = sizeof(Record);
-    }
-    return next_ele;
-}
-
-void SortTable::GetNextElement(Iterator::Element* ele, int32_t n) const {
-    if (ele == nullptr || ele->ele == nullptr) {
-        return;
-    }
-    const Record* current = reinterpret_cast<const Record*>(ele->ele);
-    const Record* next = current + n;
-    if (next >= first_ + header_->used_size) {
-        ele->ele = nullptr;
-        ele->len = 0;
-    } else {
-        ele->ele = next;
-        ele->len = sizeof(Record);
-    }
-}
 
 void SortTable::PrintTable() {
     LOG_DEBUG("SortTable: used_size=%ld, total_size=%ld",

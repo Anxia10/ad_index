@@ -1,0 +1,16 @@
+<data_config>
+  <table name="skuInfo" type="structure" key="skuId" clazz="skuInfo">
+    <descriptor>
+      <field name="skuId" type="int64"/>
+      <field name="posId" type="int64"/>
+      <field name="cate1Id" type="int64"/>
+      <field name="cate2Id" type="int64"/>
+      <field name="cate3Id" type="int64"/>
+      <field name="brandId" type="int64"/>
+      <field name="tagId" type="string"/>
+      <field name="delivery_time_x" type="string"/>
+      <field name="spuId" type="int64"/>
+    </descriptor>
+    <kernel> forward.index.type=murmurhash, forward.index.hash.bucket.num=2097152, forward.segment.level=6, forward.thread.queue.size=1000 </kernel>
+  </table>
+</data_config>

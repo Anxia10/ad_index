@@ -64,13 +64,12 @@ public:
     bool create = true) override;
   bool Insert(const KvPair& kv) override;
   bool Delete(const KvPair& kv) override;
-  bool Search(KvPair& kv) override;
+  bool Search(KvPair* kv) override;
   bool BatchInsert(const std::vector<KvPair>& kvs,
     bool already_sorted = false) override;
   bool BatchDelete(const std::vector<KvPair>& kvs,
     bool already_sorted = false) override;
-  bool BatchSearch(std::vector<KvPair*>& kvs,
-    bool already_sorted = false) override;
+  bool BatchSearch(std::vector<KvPair>* kvs, bool already_sorted = false) override;
 
   Iterator Begin(int64_t offset = -1L) const override;
   KvPair ConvertElementToKvPair(const Iterator::Element& ele) const override;

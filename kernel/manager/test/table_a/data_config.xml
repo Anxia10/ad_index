@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<data_config>
+  <table name="feature1" type="kkv" pkey="pk" skey="sk" value="v">
+    <descriptor>
+      <field name="pk" type="string"/>
+      <field name="sk" type="int32"/>
+      <field name="v" type="string"/>
+    </descriptor>
+    <kernel>
+      primary.index.type=murmurhash,
+      primary.index.hash.bucket.num=32000,
+      secondary.index.type=sort,
+      secondary.index.sort.bs.level=1,
+      secondary.index.sort.init.record.num=17,
+    </kernel>
+  </table>
+</data_config>

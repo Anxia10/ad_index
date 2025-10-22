@@ -19,15 +19,10 @@ add_library(ad_index INTERFACE)
 # 为主库目标设置属性
 include_directories(
     ${PROJECT_SOURCE_DIR}
+    include_directories(${PROJECT_SOURCE_DIR}/include) 
     ${LOG4CPP_INCLUDE_DIRS}
 )
-
-include(FetchContent)
-FetchContent_Declare(
-  rapidjson
-  URL https://github.com/Tencent/rapidjson/archive/refs/tags/v1.1.0.zip
-)
-FetchContent_MakeAvailable(rapidjson)
+link_directories(${PROJECT_SOURCE_DIR}/lib)
 
 # GoogleTest
 include(FetchContent)

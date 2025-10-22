@@ -8,6 +8,7 @@ add_library(index
   index.cc
   hash_table/hash_bucket.cc
   hash_table/murmurhash_table.cc
+  sort_table/sort_table.cc
 )
 target_link_libraries(index common)
 target_link_libraries(index store)

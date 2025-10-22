@@ -4,7 +4,7 @@
 #include <set>
 #include <unordered_set>
 #include "kernel/common/log/log.h"
-#include "tinyxml/tinyxml.h"
+#include "tinyxml.h"
 #include "rapidjson/document.h"
 #include "kernel/manager/table_info/field_info.h"
 #include "kernel/manager/table_info/index_info.h"

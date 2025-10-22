@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include "tinyxml.h"
 
 class Test {
     public:
