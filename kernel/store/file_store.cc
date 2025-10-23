@@ -29,7 +29,7 @@ data::Status FileStore::Open(const std::string& name, bool read_only) {
     if (read_only) {
         fd_ = open(name.c_str(), O_RDONLY); //只读
     } else {
-        fd_ = open(name.c_str(), O_RDWR | O_CREAT , S_IRWXU | S_IRGRP | S_IROTH); 
+        fd_ = open(name.c_str(), O_RDWR | O_CREAT , S_IRWXU | S_IRGRP | S_IROTH); // 可读、可写、可执行
     }
 
     if (fd_ < 0) {
@@ -63,7 +63,7 @@ data::Status FileStore::Write(const data::Addr& addr, const data::Data& data) {
         return data::Status(data::StatusCode::Exception, "Not Open");
     }
     off_t pos = reinterpret_cast<off_t>(addr.addr); // 指针转为文件位置
-    LOG_INFO("Addr %ld. Get pos %ld", addr.addr, pos);
+    // LOG_INFO("Addr %ld. Get pos %ld", addr.addr, pos); // Write Addr 6. Get pos 6
     off_t pointer = lseek(fd_, pos, SEEK_SET); // 文件指针移动到addr的位置
 
     if(unlikely(pointer < 0 || pointer != pos)) {
@@ -140,7 +140,7 @@ data::Status FileStore::Expand(size_t size) {
         LOG_ERROR("File expand fail.");
         return data::Status(data::StatusCode::Exception, "expand size exception");
     }
-    pos = write(fd_, &size, 1);
+    pos = write(fd_, &size, 1); // 尝试写一个文字？
     if (unlikely(pos < 0)) {
         LOG_ERROR("File write with expand fail.");
         return data::Status(data::StatusCode::Exception, "expand size exception");

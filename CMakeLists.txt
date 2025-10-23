@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # 设置变量
 set(store_dir ${PROJECT_SOURCE_DIR}/kernel/store)
-set(test_data_dir ${PROJECT_SOURCE_DIR}/kernel/test/testdata)
+set(test_data_dir ${PROJECT_SOURCE_DIR}/kernel)
 set(LOG4CPP_LIBRARIES log4cpp CACHE INTERNAL "log4cpp library")
 
 # 首先创建主库目标（空的接口库）

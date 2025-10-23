@@ -1,4 +1,3 @@
-#pragma once
 #include "kernel/common/utils/utils.h"
 namespace kernel {
 
