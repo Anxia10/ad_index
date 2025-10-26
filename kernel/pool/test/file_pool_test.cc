@@ -45,87 +45,52 @@ TEST(FilePool, Write) {
     EXPECT_TRUE(ret);
 }
 
-// TEST(FilePool, GetFreeListSize) {
-//     sleep(2);
-//     EXPECT_EQ(test_str.size(), file_pool.GetFreeListSize());
-// }
+TEST(FilePool, Read) {
+    bool ret = file_pool.Read(addr, test_str.size(), &data);
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(test_str.size(), data.len);
+    buffer[data.len] = 0;
+    EXPECT_EQ(test_str, reinterpret_cast<const char*>(data.data));
+}
 
-// TEST(FilePool, DumpFreeListAndReload) {
-//     file_pool.Release();
-//     EXPECT_TRUE(file_pool.Init("file_pool_test.dat"));
-// }
+TEST(FilePool, FreeByFreeList) {
+    file_pool.EnableFreeList();
+    file_pool.SetReuseTimegap(1);
+    bool ret = file_pool.Free(alloc_addr, test_str.size());
+    EXPECT_TRUE(ret);
+}
 
-// TEST(FilePool, AllocFromFreeListAfterSeconds) {
-//     file_pool.SetReuseTimegap(reuse_timegap);
-//     alloc_addr = file_pool.Alloc(test_str.size());
-//     EXPECT_EQ(test_str.size() + 64, file_pool.GetPoolSize());
-//     EXPECT_EQ(0UL, file_pool.GetFreeListSize());
-// }
+TEST(FilePool, GetFreeListSize) {
+    sleep(2);
+    EXPECT_EQ(test_str.size(), file_pool.GetFreeListSize());
+}
 
-// TEST(FilePool, FreeWhileFreeListDisabled) {
-//     file_pool.DisableFreeList();
-//     bool ret = file_pool.Free(alloc_addr, test_str.size());
-//     EXPECT_TRUE(ret);
-//     EXPECT_EQ(0UL, file_pool.GetFreeListSize());
-// }
+TEST(FilePool, DumpFreeListAndReload) {
+    file_pool.Release();
+    EXPECT_TRUE(file_pool.Init("file_pool_test.dat"));
+}
 
-// TEST(FilePool, AllocWhileFreeListDisabled) {
-//     alloc_addr = file_pool.Alloc(test_str.size());
-//     EXPECT_EQ(test_str.size() + 64,
-//               reinterpret_cast<size_t>(alloc_addr));
-//     EXPECT_EQ(test_str.size() * 2 + 64,
-//               file_pool.GetPoolSize());
-//     bool ret = file_pool.Free(alloc_addr, test_str.size());
-//     EXPECT_TRUE(ret);
-//     EXPECT_EQ(0UL, file_pool.GetFreeListSize());
-// }
+TEST(FilePool, AllocFromFreeListAfterSeconds) {
+    file_pool.SetReuseTimegap(reuse_timegap);
+    alloc_addr = file_pool.Alloc(test_str.size());
+    EXPECT_EQ(test_str.size() + 64, file_pool.GetPoolSize());
+    EXPECT_EQ(0UL, file_pool.GetFreeListSize());
+}
 
-// TEST(FilePool, Read) {
-//     bool ret = file_pool.Read(addr, test_str.size(), &data);
-//     EXPECT_TRUE(ret);
-//     EXPECT_EQ(test_str.size(), data.len);
-//     buffer[data.len] = 0;
-//     EXPECT_EQ(test_str, reinterpret_cast<const char*>(data.data));
-// }
+TEST(FilePool, FreeWhileFreeListDisabled) {
+    file_pool.DisableFreeList();
+    bool ret = file_pool.Free(alloc_addr, test_str.size());
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(0UL, file_pool.GetFreeListSize());
+}
 
-// TEST(FilePool, FreeByFreeList) {
-//     file_pool.EnableFreeList();
-//     file_pool.SetReuseTimegap(1);
-//     bool ret = file_pool.Free(alloc_addr, test_str.size());
-//     EXPECT_TRUE(ret);
-// }
-
-// TEST(FilePool, GetFreeListSize) {
-//     sleep(2);
-//     EXPECT_EQ(test_str.size(), file_pool.GetFreeListSize());
-// }
-
-// TEST(FilePool, DumpFreeListAndReload) {
-//     file_pool.Release();
-//     EXPECT_TRUE(file_pool.Init("file_pool_test.dat"));
-// }
-
-// TEST(FilePool, AllocFromFreeListAfterSeconds) {
-//     file_pool.SetReuseTimegap(reuse_timegap);
-//     alloc_addr = file_pool.Alloc(test_str.size());
-//     EXPECT_EQ(test_str.size() + 64, file_pool.GetPoolSize());
-//     EXPECT_EQ(0UL, file_pool.GetFreeListSize());
-// }
-
-// TEST(FilePool, FreeWhileFreeListDisabled) {
-//     file_pool.DisableFreeList();
-//     bool ret = file_pool.Free(alloc_addr, test_str.size());
-//     EXPECT_TRUE(ret);
-//     EXPECT_EQ(0UL, file_pool.GetFreeListSize());
-// }
-
-// TEST(FilePool, AllocWhileFreeListDisabled) {
-//     alloc_addr = file_pool.Alloc(test_str.size());
-//     EXPECT_EQ(test_str.size() + 64,
-//               reinterpret_cast<size_t>(alloc_addr));
-//     EXPECT_EQ(test_str.size() * 2 + 64,
-//               file_pool.GetPoolSize());
-//     bool ret = file_pool.Free(alloc_addr, test_str.size());
-//     EXPECT_TRUE(ret);
-//     EXPECT_EQ(0UL, file_pool.GetFreeListSize());
-// }
+TEST(FilePool, AllocWhileFreeListDisabled) {
+    alloc_addr = file_pool.Alloc(test_str.size());
+    EXPECT_EQ(test_str.size() + 64,
+              reinterpret_cast<size_t>(alloc_addr));
+    EXPECT_EQ(test_str.size() * 2 + 64,
+              file_pool.GetPoolSize());
+    bool ret = file_pool.Free(alloc_addr, test_str.size());
+    EXPECT_TRUE(ret);
+    EXPECT_EQ(0UL, file_pool.GetFreeListSize());
+}

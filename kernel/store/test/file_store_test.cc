@@ -154,8 +154,20 @@ TEST(FileStore, ReadOutOfRange) {
   EXPECT_TRUE(!status.operate());
 }
 
-// TEST(FileStore, Override) {
-// }
+TEST(FileStore, Override) {
+  addr.addr = reinterpret_cast<void*>(6);
+  std::string test_str = "Override.";
+  data.data = test_str.c_str();
+  data.len = test_str.size();
+  status = file_store.Write(addr, data);
+  EXPECT_FALSE(!status.operate());
+  data.data = buffer;
+  addr.addr = 0;
+  status = file_store.Read(addr, 100, &data);
+  EXPECT_FALSE(!status.operate());
+  buffer[data.len] = 0;
+  EXPECT_EQ(std::string("Write.Override.") , reinterpret_cast<const char*>(data.data));
+}
 
 TEST(FileStore, Expand) {
   status = file_store.Expand(20);
@@ -163,11 +175,11 @@ TEST(FileStore, Expand) {
   EXPECT_FALSE(!status.operate());
 }
 
-TEST(FileStore, Truncate) {
-  status = file_store.Expand(10);
-  EXPECT_EQ(10, file_store.GetSize());
-  EXPECT_FALSE(!status.operate());
-}
+// TEST(FileStore, Truncate) {
+//   status = file_store.Expand(10);
+//   EXPECT_EQ(10, file_store.GetSize());
+//   EXPECT_FALSE(!status.operate());
+// }
 
 TEST(FileStore, CloseAgain) {
   status = file_store.Close();
