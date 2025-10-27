@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include <iostream>
+#include "gtest/gtest.h"
 #include "kernel/store/file_store.h"
 static kernel::store::FileStore file_store;
 static kernel::data::Status status;
@@ -170,8 +170,9 @@ TEST(FileStore, Override) {
 }
 
 TEST(FileStore, Expand) {
-  status = file_store.Expand(20);
-  EXPECT_EQ(20, file_store.GetSize());
+  size_t size = file_store.GetSize();
+  status = file_store.Expand(1);
+  EXPECT_EQ(size + 1, file_store.GetSize());
   EXPECT_FALSE(!status.operate());
 }
 

@@ -483,57 +483,57 @@ int64_t SortTable::GetTotalSize(int64_t offset) {
     return target_header ? target_header->total_size : 0;
 }
 
-int64_t SortTable::GetHashKey(const void* key, int32_t len) {
-    if (key == nullptr || len <= 0) {
-        return 0;
-    }
-    // 使用MurmurHash计算键的哈希值
-    uint32_t hash = Utils::MurmurHash2(key, len, kHighHashSeed);
-    return static_cast<int64_t>(hash);
-}
+// int64_t SortTable::GetHashKey(const void* key, int32_t len) {
+//     if (key == nullptr || len <= 0) {
+//         return 0;
+//     }
+//     // 使用MurmurHash计算键的哈希值
+//     uint32_t hash = Utils::MurmurHash2(key, len, kHighHashSeed);
+//     return static_cast<int64_t>(hash);
+// }
 
-Record* SortTable::DirectlyAdd(int64_t pos, const void* key) {
-    // 在已有空间中直接插入记录
-    int64_t insert_pos = pos + 1;
-    // 移动后续记录
-    for (int64_t i = header_->used_size; i > insert_pos; i--) {
-        first_[i] = first_[i - 1];
-    }
-    // 插入新记录
-    first_[insert_pos].key = *(reinterpret_cast<const record_key_type*>(key));
-    first_[insert_pos].value = 0; // 默认值
-    header_->used_size++;
-    return first_ + insert_pos;
-}
+// Record* SortTable::DirectlyAdd(int64_t pos, const void* key) {
+//     // 在已有空间中直接插入记录
+//     int64_t insert_pos = pos + 1;
+//     // 移动后续记录
+//     for (int64_t i = header_->used_size; i > insert_pos; i--) {
+//         first_[i] = first_[i - 1];
+//     }
+//     // 插入新记录
+//     first_[insert_pos].key = *(reinterpret_cast<const record_key_type*>(key));
+//     first_[insert_pos].value = 0; // 默认值
+//     header_->used_size++;
+//     return first_ + insert_pos;
+// }
 
-Record* SortTable::AllocAdd(int64_t pos, const void* key) {
-    // 分配新空间并插入记录（共享模式下使用）
-    // 此处省略具体实现
-    return nullptr;
-}
+// Record* SortTable::AllocAdd(int64_t pos, const void* key) {
+//     // 分配新空间并插入记录（共享模式下使用）
+//     // 此处省略具体实现
+//     return nullptr;
+// }
 
-Record* SortTable::ExpandAdd(int64_t pos, const void* key) {
-    // 扩容并插入记录（独占模式下使用）
-    int64_t new_size = header_->total_size * 2; // 翻倍扩容
-    // 分配新空间
-    void* new_addr = mmap_pool_->Alloc(sizeof(SortTableHeader) +
-        sizeof(Record) * new_size);
-    if (new_addr == nullptr) {
-        LOG_ERROR("ExpandAdd: alloc new space failed");
-        return nullptr;
-    }
-    // 复制旧数据
-    SortTableHeader* new_header = reinterpret_cast<SortTableHeader*>(new_addr);
-    new_header->used_size = header_->used_size;
-    new_header->total_size = new_size;
-    Record* new_first = reinterpret_cast<Record*>(new_header + 1);
-    memcpy(new_first, first_, sizeof(Record) * header_->used_size);
-    // 替换旧指针
-    header_ = new_header;
-    first_ = new_first;
-    // 插入新记录
-    return DirectlyAdd(pos, key);
-}
+// Record* SortTable::ExpandAdd(int64_t pos, const void* key) {
+//     // 扩容并插入记录（独占模式下使用）
+//     int64_t new_size = header_->total_size * 2; // 翻倍扩容
+//     // 分配新空间
+//     void* new_addr = mmap_pool_->Alloc(sizeof(SortTableHeader) +
+//         sizeof(Record) * new_size);
+//     if (new_addr == nullptr) {
+//         LOG_ERROR("ExpandAdd: alloc new space failed");
+//         return nullptr;
+//     }
+//     // 复制旧数据
+//     SortTableHeader* new_header = reinterpret_cast<SortTableHeader*>(new_addr);
+//     new_header->used_size = header_->used_size;
+//     new_header->total_size = new_size;
+//     Record* new_first = reinterpret_cast<Record*>(new_header + 1);
+//     memcpy(new_first, first_, sizeof(Record) * header_->used_size);
+//     // 替换旧指针
+//     header_ = new_header;
+//     first_ = new_first;
+//     // 插入新记录
+//     return DirectlyAdd(pos, key);
+// }
 
 
 } // namespace index

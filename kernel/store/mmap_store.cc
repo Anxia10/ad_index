@@ -59,7 +59,7 @@ data::Status MMapStore::Read(const data::Addr& addr, size_t len, data::Data* dat
     }
     char* read_begin = reinterpret_cast<char*>(addr.addr);
     char* mmap_end = base_ + mmap_size_;
-    if (likely(read_begin >= base_ && read_begin + len <= mmap_end)) {
+    if (likely(!(read_begin >= base_ && read_begin + len <= mmap_end))) {
         LOG_ERROR("MMap [%s] read addr error. Base[%p] mmap size [%lu] addr [%p] len[%lu]", name_.c_str(), base_, mmap_size_, read_begin, len);
         return data::Status(data::StatusCode::Exception, "addr error");
     }
@@ -79,10 +79,10 @@ data::Status MMapStore::Write(const data::Addr& addr, const data::Data& data) {
         return data::Status(data::StatusCode::Exception, "addr error");
     }
     size_t file_size = GetSize();
-    char* mmap_end = base_ + (file_size < mmap_size_ ? file_size : mmap_size_); // file_size的大小没做变化？？？
+    char* mmap_end = base_ + (file_size < mmap_size_ ? file_size : mmap_size_); // file_size的大小没做变化
 
     if (unlikely(write_begin + data.len > mmap_end)) {
-        LOG_ERROR("Use FileStore Write. write_begin[%p], data len[%lu], mmap end[%p]", write_begin, data.len, mmap_end);
+        LOG_DEBUG("Use FileStore Write. write_begin[%p], data len[%lu], mmap end[%p]", write_begin, data.len, mmap_end);
         size_t offset = write_begin - base_;
         return FileStore::Write(data::Addr(reinterpret_cast<void*>(offset)), data);
     }
@@ -96,7 +96,7 @@ data::Status MMapStore::Append(const data::Data& data) {
     if (!status.operate()) {
         return status;
     }
-    return FileStore::Write(data::Addr(base_ + begin), data);
+    return MMapStore::Write(data::Addr(base_ + begin), data);
 }
 
 

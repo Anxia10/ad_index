@@ -8,16 +8,19 @@ static kernel::data::Data data;
 static char buffer[128];
 const static std::string test_data = std::string(test_data_dir) + "/store/test/testdata/";
 
-TEST(MMapStore, LogConfig) {
-    LOG_CONFIG(test_data + "log4cpp.properties");
+TEST(MMapStore, LogConfig)
+{
+  LOG_CONFIG(test_data + "log4cpp.properties");
 }
 
-TEST(MMapStore, ReadOnlyOpenNotExist) {
+TEST(MMapStore, ReadOnlyOpenNotExist)
+{
   status = mmap_store.Open(test_data + "mmap_store_test1.dat", true);
   EXPECT_TRUE(!status.operate());
 }
 
-TEST(MMapStore, Open) {
+TEST(MMapStore, Open)
+{
   mmap_store.SetMMapSize(4 * 1024);
   mmap_store.SetMemoryLock(true);
   mmap_store.SetMemoryPreload(true);
@@ -25,47 +28,54 @@ TEST(MMapStore, Open) {
   EXPECT_FALSE(!status.operate());
 }
 
-TEST(MMapStore, CloseNotReadOnly) {
+TEST(MMapStore, CloseNotReadOnly)
+{
   status = mmap_store.Close();
   EXPECT_FALSE(!status.operate());
 }
 
-TEST(MMapStore, ReadOnlyOpenExist) {
+TEST(MMapStore, ReadOnlyOpenExist)
+{
   status = mmap_store.Open(test_data + "mmap_store_test.dat", true);
   EXPECT_FALSE(!status.operate());
 }
 
-TEST(MMapStore, WriteReadOnly) {
+TEST(MMapStore, WriteReadOnly)
+{
   addr.addr = mmap_store.GetBase();
   std::string test_str = "Write.";
-  data.data = const_cast<char*>(test_str.c_str());
+  data.data = const_cast<char *>(test_str.c_str());
   data.len = test_str.size();
   status = mmap_store.Write(addr, data);
   EXPECT_TRUE(!status.operate());
 }
 
-TEST(MMapStore, CloseReadOnly) {
+TEST(MMapStore, CloseReadOnly)
+{
   status = mmap_store.Close();
   EXPECT_FALSE(!status.operate());
 }
 
-TEST(MMapStore, OpenAgain) {
+TEST(MMapStore, OpenAgain)
+{
   status = mmap_store.Open(test_data + "mmap_store_test.dat");
   EXPECT_FALSE(!status.operate());
 }
 
-TEST(MMapStore, Write) {
+TEST(MMapStore, Write)
+{
   addr.addr = mmap_store.GetBase();
   std::string test_str = "Write.";
-  data.data = const_cast<char*>(test_str.c_str());
+  data.data = const_cast<char *>(test_str.c_str());
   data.len = test_str.size();
   status = mmap_store.Write(addr, data);
   EXPECT_FALSE(!status.operate());
 }
 
-TEST(MMapStore, Append) {
+TEST(MMapStore, Append)
+{
   std::string test_str = "Append.";
-  data.data = const_cast<char*>(test_str.c_str());
+  data.data = const_cast<char *>(test_str.c_str());
   data.len = test_str.size();
   status = mmap_store.Append(data);
   EXPECT_FALSE(!status.operate());
