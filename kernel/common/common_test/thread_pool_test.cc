@@ -12,7 +12,7 @@ TEST(ThreadPool, Start) {
 }
 
 TEST(ThreadPool, AddTask) {
-    #pragma omp parallel num_threads(100)
+    #pragma omp parallel num_threads(100) // OpenMP 指令，用于创建一个并行区域，会启动多个线程执行该区域内的代码。
     {
         #pragma omp for
         for (int32_t i = 0; i < 10000; i++) {
@@ -23,7 +23,7 @@ TEST(ThreadPool, AddTask) {
                 for (int32_t i = 0; i < 100; i++) {
                     __sync_fetch_and_add(&sum, *one);
                 }
-            };
+            }; // lambda函数
             while (!pool.AddTask(std::move(task))) {}
         }
     }

@@ -8,10 +8,10 @@ static char buffer[128];
 static kernel::data::Data data(buffer);
 static const std::string test_str = "FilePool Test."; // NOLINT
 static const int32_t reuse_timegap = 0;
-const static std::string base_path = test_data_dir;
+const static std::string test_data = std::string(test_data_dir) + "/pool/test/testdata";
 
 TEST(FileStore, LogConfig) {
-    LOG_CONFIG(base_path + "/log4cpp.properties");
+    LOG_CONFIG(test_data + "/log4cpp.properties");
 }
 
 TEST(FilePool, Size) {
@@ -19,12 +19,12 @@ TEST(FilePool, Size) {
 }
 
 TEST(FilePool, InitReadOnly) {
-    bool ret = file_pool.Init("file_pool_test.dat", true);
+    bool ret = file_pool.Init(test_data + "/file_pool_test.dat", true);
     EXPECT_FALSE(ret);
 }
 
 TEST(FilePool, Init) {
-    bool ret = file_pool.Init("file_pool_test.dat");
+    bool ret = file_pool.Init(test_data + "/file_pool_test.dat");
     EXPECT_TRUE(ret);
 }
 
@@ -66,8 +66,11 @@ TEST(FilePool, GetFreeListSize) {
 }
 
 TEST(FilePool, DumpFreeListAndReload) {
+    // std::cout<< file_pool.GetFreeListSize() << std::endl;
     file_pool.Release();
-    EXPECT_TRUE(file_pool.Init("file_pool_test.dat"));
+    // std::cout<< file_pool.GetFreeListSize() << std::endl;
+    EXPECT_TRUE(file_pool.Init(test_data + "/file_pool_test.dat"));
+    // std::cout<< file_pool.GetFreeListSize() << std::endl;
 }
 
 TEST(FilePool, AllocFromFreeListAfterSeconds) {

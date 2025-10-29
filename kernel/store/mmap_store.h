@@ -21,6 +21,9 @@ class MMapStore : public FileStore {
         void SetMMapSize(size_t mmap_size) {
             mmap_size_ = mmap_size;
         }
+        size_t GetMMapSize() {
+            return mmap_size_;
+        }
         void SetMemoryLock(bool memory_force) {
             memory_lock_ = memory_force;
         }

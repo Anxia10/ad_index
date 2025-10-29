@@ -120,7 +120,7 @@ bool FilePool::Free(void* addr, size_t size) {
 
 bool FilePool::DoFree(void* addr, size_t size) {
     size = GetAlignedSize(size);
-    if (!use_free_list_) {
+    if (!use_free_list_) { // 不使用freeList释放时也不会删掉FreeList中的内容
         return true;
     }
     Block block;
@@ -279,6 +279,13 @@ bool FilePool::DumpFreeList(const std::string& free_list_file) {
         store->Close();
         delete store;
         return false;
+    }
+    free_list_.clear();
+    pos = reinterpret_cast<char *>(sizeof(size) + size * sizeof(Block));
+    free_list_meta_.user_space_size = 0UL;
+    if (!(store->Truncate(reinterpret_cast<size_t>(pos))).operate())
+    {
+        LOG_WARN("Truncate fail.");
     }
     store->Close();
     delete store;

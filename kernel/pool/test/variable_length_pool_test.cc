@@ -8,18 +8,18 @@ static kernel::pool::VariableLengthPool variable_length_pool;
 static kernel::data::Addr addr;
 static kernel::data::Data data;
 static char buffer[128];
+const static std::string test_data = std::string(test_data_dir) + "/pool/test/testdata";
 
 TEST(VariableLengthPool, LogConfig) {
-  LOG_CONFIG("sophon/test/testdata/log4cpp.properties");
+  LOG_CONFIG(test_data + "/log4cpp.properties");
 }
 
 TEST(VariableLengthPool, ReadOnlyInitNotExist) {
-  EXPECT_FALSE(variable_length_pool.Init(
-      "variable_length_pool_test.dat", true));
+  EXPECT_FALSE(variable_length_pool.Init(test_data + "/variable_length_pool_test.dat", true));
 }
 
 TEST(VariableLengthPool, Init) {
-  EXPECT_TRUE(variable_length_pool.Init("variable_length_pool_test.dat"));
+  EXPECT_TRUE(variable_length_pool.Init(test_data + "/variable_length_pool_test.dat"));
 }
 
 TEST(VariableLengthPool, ReleaseNotReadOnly) {
@@ -27,7 +27,7 @@ TEST(VariableLengthPool, ReleaseNotReadOnly) {
 }
 
 TEST(VariableLengthPool, ReadOnlyInitExist) {
-  EXPECT_TRUE(variable_length_pool.Init("variable_length_pool_test.dat", true));
+  EXPECT_TRUE(variable_length_pool.Init(test_data + "/variable_length_pool_test.dat", true));
 }
 
 TEST(VariableLengthPool, ReleaseReadOnly) {
@@ -35,7 +35,7 @@ TEST(VariableLengthPool, ReleaseReadOnly) {
 }
 
 TEST(VariableLengthPool, InitAgain) {
-  EXPECT_TRUE(variable_length_pool.Init("variable_length_pool_test.dat"));
+  EXPECT_TRUE(variable_length_pool.Init(test_data + "/variable_length_pool_test.dat"));
 }
 
 TEST(VariableLengthPool, GetDataSize) {

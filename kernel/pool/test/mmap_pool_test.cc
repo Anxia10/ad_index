@@ -9,20 +9,25 @@ static kernel::data::Data data(buffer);
 static const int32_t reuse_timegap = 0;
 static const std::string test_str = "MMapPool Test."; // NOLINT
 static const size_t test_str_aligned = (test_str.size() + 1UL - 1UL) & ~(1UL - 1UL);
+const static std::string test_data = std::string(test_data_dir) + "/pool/test/testdata";
 
 TEST(MMapPool, LogConfig) {
-    LOG_CONFIG("sophon/test/testdata/log4cpp.properties");
+    LOG_CONFIG(test_data + "/log4cpp.properties");
 }
 
 TEST(MMapPool, InitReadOnly) {
     mmap_pool.SetMinExpandSize(1024);
-    bool ret = mmap_pool.Init("mmap_pool_test.dat", true);
+    bool ret = mmap_pool.Init(test_data + "/mmap_pool_test.dat", true);
     EXPECT_FALSE(ret);
 }
 
 TEST(MMapPool, Init) {
-    bool ret = mmap_pool.Init("mmap_pool_test.dat");
+    bool ret = mmap_pool.Init(test_data + "/mmap_pool_test.dat");
     EXPECT_TRUE(ret);
+}
+
+TEST(MMapPool, GetStoreSize) {
+    EXPECT_EQ(1*1024*1024*1024, reinterpret_cast<kernel::store::MMapStore*>(mmap_pool.GetStore())->GetMMapSize());
 }
 
 TEST(MMapPool, GetUsedSize) {
@@ -83,7 +88,7 @@ TEST(MMapPool, GetFreeListSize) {
 
 TEST(MMapPool, DumpFreeListAndReload) {
     mmap_pool.Release();
-    EXPECT_TRUE(mmap_pool.Init("mmap_pool_test.dat"));
+    EXPECT_TRUE(mmap_pool.Init(test_data + "/mmap_pool_test.dat"));
 }
 
 TEST(MMapPool, AllocFromFreeListAfterSeconds) {

@@ -5,18 +5,18 @@ static kernel::pool::FixLengthPool fix_length_pool(5);
 static kernel::data::Addr addr;
 static kernel::data::Data data;
 static char buffer[128];
+const static std::string test_data = std::string(test_data_dir) + "/pool/test/testdata";
 
 TEST(FixLengthPool, LogConfig) {
-  LOG_CONFIG("sophon/test/testdata/log4cpp.properties");
+  LOG_CONFIG(test_data + "/log4cpp.properties");
 }
 
 TEST(FixLengthPool, ReadOnlyInitNotExist) {
-  EXPECT_FALSE(fix_length_pool.Init(
-      "fix_length_pool_test.dat", true));
+  EXPECT_FALSE(fix_length_pool.Init(test_data + "/fix_length_pool_test.dat", true));
 }
 
 TEST(FixLengthPool, Init) {
-  EXPECT_TRUE(fix_length_pool.Init("fix_length_pool_test.dat"));
+  EXPECT_TRUE(fix_length_pool.Init(test_data + "/fix_length_pool_test.dat"));
 }
 
 TEST(FixLengthPool, ReleaseNotReadOnly) {
@@ -24,7 +24,7 @@ TEST(FixLengthPool, ReleaseNotReadOnly) {
 }
 
 TEST(FixLengthPool, ReadOnlyInitExist) {
-  EXPECT_TRUE(fix_length_pool.Init("fix_length_pool_test.dat", true));
+  EXPECT_TRUE(fix_length_pool.Init(test_data + "/fix_length_pool_test.dat", true));
 }
 
 TEST(FixLengthPool, ReleaseReadOnly) {
@@ -32,7 +32,7 @@ TEST(FixLengthPool, ReleaseReadOnly) {
 }
 
 TEST(FixLengthPool, InitAgain) {
-  EXPECT_TRUE(fix_length_pool.Init("fix_length_pool_test.dat"));
+  EXPECT_TRUE(fix_length_pool.Init(test_data + "/fix_length_pool_test.dat"));
 }
 
 TEST(FixLengthPool, GetDataSize) {
