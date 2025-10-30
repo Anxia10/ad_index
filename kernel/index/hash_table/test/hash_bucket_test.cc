@@ -6,7 +6,7 @@ static char _buffer[128];
 static char* buffer = _buffer;
 
 TEST(HashBucket, Size) {
-    EXPECT_EQ(16UL, sizeof(kernel::index::HashBucket)); // 17个字节
+    EXPECT_EQ(17UL, sizeof(kernel::index::HashBucket)); // 17个字节
 }
 
 TEST(HashBucket, CheckInitParam) {
@@ -44,7 +44,7 @@ TEST(HashBucket, Clear) {
 }
 
 TEST(HashBucket, SetAndCheckHashCodeInPayLod) {
-  bucket.KeyInPayload();
+  bucket.SetHashCodeInPayload(1);
   EXPECT_TRUE(bucket.HashCodeInPayload());
   EXPECT_TRUE(bucket.CheckHashCodeInPayload(1));
   EXPECT_FALSE(bucket.CheckHashCodeInPayload(2));

@@ -4,10 +4,10 @@
 static kernel::index::MurMurHashTable table;
 static kernel::pool::MMapPool pool;
 static kernel::index::KvPair kv;
-const static std::string base_path = test_data_dir;
+const static std::string test_data = std::string(test_data_dir) + "/index/testdata";
 
 TEST(MurMurHashTable, LogConfig) {
-    LOG_CONFIG(base_path + "/log4cpp.properties");
+    LOG_CONFIG(test_data + "/log4cpp.properties");
 }
 
 TEST(MurMurHashTable, CheckMurMurHashTableHeader) {
@@ -26,12 +26,12 @@ TEST(MurMurHashTable, BucketNum) {
 }
 
 TEST(MurMurHashTable, InitReadOnly) {
-    EXPECT_FALSE(pool.Init(base_path + "/murmurhash_table_test.dat", true));
+    EXPECT_FALSE(pool.Init(test_data + "/murmurhash_table_test.dat", true));
     pool.Release();
 }
 
 TEST(MurMurHashTable, Init) {
-    EXPECT_TRUE(pool.Init(base_path + "/murmurhash_table_test.dat"));
+    EXPECT_TRUE(pool.Init(test_data + "/murmurhash_table_test.dat"));
     EXPECT_TRUE(table.Init(&pool, pool.GetMMapDataBegin()));
 }
 
@@ -177,7 +177,7 @@ TEST(MurmurHashTable, Release) {
 }
 
 TEST(MurmurHashTable, InitFromFile) {
-  EXPECT_TRUE(pool.Init("murmurhash_table_test.dat"));
+  EXPECT_TRUE(pool.Init(test_data + "/murmurhash_table_test.dat"));
   table.SetBucketNum(15);
   EXPECT_TRUE(table.Init(&pool, pool.GetMMapDataBegin(), false));
   EXPECT_EQ(2U, table.GetBucketNum());
