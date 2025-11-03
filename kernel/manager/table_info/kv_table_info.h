@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "sophon/manager/table_info/table_info.h"
+#include "kernel/manager/table_info/table_info.h"
 
 namespace kernel {
 namespace manager {

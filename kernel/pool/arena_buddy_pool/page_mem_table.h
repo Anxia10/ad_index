@@ -1,11 +1,8 @@
-/*
-Copyright [2021-3-2] <yingdawei>
-*/
 #pragma once
 #include <math.h>
 #include <vector>
-#include "mbase/log.h"
-#include "mbase/data.h"
+#include "common/log/log.h"
+#include "common/data/data.h"
 #include "kernel/pool/arena_buddy_pool/slab_mem_table.h"
 #include "kernel/pool/arena_buddy_pool/ab_pool_define.h"
 #ifndef WAIMAI_AD_INDEX_KERNEL_PAGE_MEM_TABLE_H

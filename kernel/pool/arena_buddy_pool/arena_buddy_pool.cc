@@ -40,7 +40,7 @@ void* AreanaBuddyPool::DoAlloc(size_t size) {
     return reinterpret_cast<void*>(ret + sizeof(AreanaBuddyDataHeader));
 }
 
-int64_t AreanaBuddyPool::NewDataLen(const Data& data) {
+int64_t AreanaBuddyPool::NewDataLen(const data::Data& data) {
     int64_t ret = heap_mem_manager_.AllocData(data.len
         + sizeof(AreanaBuddyDataHeader));
     AreanaBuddyDataHeader* header = reinterpret_cast<AreanaBuddyDataHeader*>(ret);
@@ -49,14 +49,14 @@ int64_t AreanaBuddyPool::NewDataLen(const Data& data) {
         return -1L;
     }
     header->size = data.len;
-    if (!store_->Write(Addr(header + 1), data)) {
+    if (!store_->Write(data::Addr(header + 1), data).operate()) {
         LOG_ERROR("Write fail.");
         return -1L;
     }
     return ret + sizeof(AreanaBuddyDataHeader);
 }
 
-int64_t AreanaBuddyPool::NewData(const Data& data) {
+int64_t AreanaBuddyPool::NewData(const data::Data& data) {
     void* addr = Alloc(data.len);
     if (addr == nullptr) {
         LOG_ERROR("NewData Error.");
@@ -69,7 +69,7 @@ int64_t AreanaBuddyPool::NewData(const Data& data) {
         return -1L;
     }
     header->size = data.len;
-    if (!store_->Write(Addr(header + 1), data)) {
+    if (!store_->Write(data::Addr(header + 1), data).operate()) {
         LOG_ERROR("Write fail.");
         return -1L;
     }
@@ -88,7 +88,7 @@ bool AreanaBuddyPool::DoFree(void* addr, size_t size) {
         header->size + sizeof(AreanaBuddyDataHeader));
 }
 
-bool AreanaBuddyPool::Write(const Addr& addr, const Data& data) {
+bool AreanaBuddyPool::Write(const data::Addr& addr, const data::Data& data) {
     AreanaBuddyDataHeader* header
         = reinterpret_cast<AreanaBuddyDataHeader*>(
             reinterpret_cast<char*>(addr.addr) - sizeof(AreanaBuddyDataHeader));
@@ -101,10 +101,10 @@ bool AreanaBuddyPool::Write(const Addr& addr, const Data& data) {
         return false;
     }
     header->size = data.len;
-    return !!store_->Write(Addr(header + 1), data);
+    return !!store_->Write(data::Addr(header + 1), data).operate();
 }
 
-bool AreanaBuddyPool::Read(const Addr& addr, size_t len, Data* data) {
+bool AreanaBuddyPool::Read(const data::Addr& addr, size_t len, data::Data* data) {
     AreanaBuddyDataHeader* header =
         reinterpret_cast<AreanaBuddyDataHeader*>(
             reinterpret_cast<char*>(addr.addr) - sizeof(AreanaBuddyDataHeader));
@@ -115,8 +115,8 @@ bool AreanaBuddyPool::Read(const Addr& addr, size_t len, Data* data) {
     }
     char* c_addr = reinterpret_cast<char*>(addr.addr);
     return !!store_->Read(
-        Addr(c_addr),
-        header->size, data);
+        data::Addr(c_addr),
+        header->size, data).operate();
 }
 
 void* AreanaBuddyPool::AllocNewStore(size_t size) {
